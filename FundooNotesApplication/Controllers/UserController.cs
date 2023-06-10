@@ -1,9 +1,14 @@
 ﻿using BusinessLogicLayer.Interface;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 using ModelLayer.Models;
+using RepositoryLayer.Context;
 using RepositoryLayer.Entity;
+using RepositoryLayer.Migrations;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace FundooNotesApplication.Controllers
@@ -13,24 +18,36 @@ namespace FundooNotesApplication.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserBusiness iUserBus;
-        public UserController(IUserBusiness iUserBus)
+        private readonly FundooContext fundoo;
+        public UserController(IUserBusiness iUserBus, FundooContext fundoo)
         {
             this.iUserBus = iUserBus;
+            this.fundoo=fundoo;
         }
+        
         [HttpPost]
         [Route("Register")]
         public IActionResult Register(RegisterModel regMod)
         {
             try
             {
-                var Ask = iUserBus.Register(regMod);
-                if (Ask != null)
+                var IfEmailExists = iUserBus.IfEmailExists(regMod.Email);
+                if (IfEmailExists)
                 {
-                    return Ok(new ResponseModel<UserEntity> { Status = true, Message = "Register SuccessFull"});
+                    Logger.LogMessage("Email already Exists");
+                    return Ok(new { Status = false, Message = "Email already Exists" });
                 }
                 else
                 {
-                    return BadRequest(new ResponseModel<UserEntity> { Status = false, Message = "Register UNSuccessFull" });
+                    var Ask = iUserBus.Register(regMod);
+                    if (Ask != null)
+                    {
+                        return Ok(new ResponseModel<UserEntity> { Status = true, Message = "Register SuccessFull", Data = Ask });
+                    }
+                    else
+                    {
+                        return BadRequest(new ResponseModel<UserEntity> { Status = false, Message = "Register UNSuccessFull", Data = Ask });
+                    }
                 }
             }
             catch (Exception ex)
@@ -47,11 +64,11 @@ namespace FundooNotesApplication.Controllers
                 var Asklog = iUserBus.Login(logModel);
                 if (Asklog != null)
                 {
-                    return Ok(new ResponseModel<UserEntity> { Status = true, Message = "Login SuccessFull" });
+                    return Ok(new ResponseModel<string> { Status = true, Message = "Login SuccessFull",Data= Asklog });
                 }
                 else
                 {
-                    return BadRequest(new ResponseModel<UserEntity> { Status = false, Message = "Login UNSuccessFull" });
+                    return BadRequest(new ResponseModel<string> { Status = false, Message = "Login UNSuccessFull", Data = Asklog });
                 }
             }
             catch(Exception ex)

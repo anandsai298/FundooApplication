@@ -1,4 +1,5 @@
 ﻿using BusinessLogicLayer.Interface;
+using Microsoft.Data.SqlClient.Server;
 using ModelLayer.Models;
 using RepositoryLayer.Entity;
 using RepositoryLayer.Interface;
@@ -15,7 +16,7 @@ namespace BusinessLogicLayer.Services
         {
             IuserRep = iuserRep;
         }
-        public string Register(RegisterModel RegModel)
+        public UserEntity Register(RegisterModel RegModel)
         {
             try
             {
@@ -33,6 +34,39 @@ namespace BusinessLogicLayer.Services
                 return IuserRep.Login(logModel);
             }
             catch(Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+        public bool IfEmailExists(string Email)
+        {
+            try
+            {
+                return IuserRep.IfEmailExists(Email);
+            }
+            catch(Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+        public string ForgetPassword(string email)
+        {
+            try
+            {
+                return IuserRep.ForgetPassword(email);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+        public UserTicket CreateTicketForPassword(string email, string token)
+        {
+            try
+            {
+                return IuserRep.CreateTicketForPassword(email, token);
+            }
+            catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }

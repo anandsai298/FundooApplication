@@ -20,19 +20,15 @@ namespace RepositoryLayer.Services
     {
         private readonly FundooContext fundoo;
         private readonly IConfiguration Configuration;
-        public UserRepository(FundooContext fundoo)
+        public UserRepository(FundooContext fundoo, IConfiguration Configuration)
         {
             this.fundoo= fundoo;
+            this.Configuration = Configuration;
         }
-        public string Register(RegisterModel RegModel)
+        public UserEntity Register(RegisterModel RegModel)
         {
             try 
             {
-                bool EmailExist = fundoo.Users.Any(x => x.Email == RegModel.Email);
-                if (EmailExist)
-                {
-                    return "Email already exists";
-                }
                 UserEntity userEntity = new UserEntity();
                 userEntity.FirstName = RegModel.FirstName;
                 userEntity.LastName = RegModel.LastName;
@@ -42,7 +38,7 @@ namespace RepositoryLayer.Services
                 userEntity.UpdateAt = DateTime.Now;
                 fundoo.Users.Add(userEntity);
                 fundoo.SaveChanges();
-                return "Registration Successfull";
+                return userEntity;
             }
             catch (Exception ex)
             {
@@ -60,9 +56,15 @@ namespace RepositoryLayer.Services
             var IfExists = this.fundoo.Users.Where(x => x.Email == logModel.Email && x.Password == EnPassword).FirstOrDefault();
             if (IfExists != null)
             {
-                return "Login Successfull";
+                var token=GenerateToken(IfExists.UserID,IfExists.Email);
+                return token;
             }
             return "Login UnsuccessFull Due to Invalid Email or Password";
+        }
+        public bool IfEmailExists(string Email)
+        {
+            var count = fundoo.Users.Where(x => x.Email.Equals(Email)).Count();
+            return count > 0;
         }
         public String GenerateToken(int UserID,string Email)
         {
@@ -76,6 +78,55 @@ namespace RepositoryLayer.Services
             var token = new JwtSecurityToken(Configuration["Jwt:Issuer"], Configuration["Jwt:Audience"], 
                 Claims,expires: DateTime.Now.AddMinutes(15),signingCredentials: Credentials);
             return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+        public string ForgetPassword(string email)
+        {
+            try
+            {
+                var Check = fundoo.Users.Where(x => x.Email == email).FirstOrDefault();
+                if(Check!=null)
+                {
+                    var token = GenerateToken(Check.UserID, Check.Email);
+                    new MSMQ().SendMessage(token, Check.Email, Check.FirstName);
+                    return token;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch(Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+        public UserTicket CreateTicketForPassword(string email,string token)
+        {
+            try
+            {
+                var Check = fundoo.Users.Where(x => x.Email == email).FirstOrDefault();
+                if(Check!=null)
+                {
+                    UserTicket ticket = new UserTicket
+                    {
+                        FirstName = Check.FirstName,
+                        LastName = Check.LastName,
+                        Email = Check.Email,
+                        Token = token,
+                        IssueDateTime = DateTime.Now,
+                    };
+                    return ticket;
+                }
+                else
+                {
+                    return null;
+                }
+
+            }
+            catch(Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
     }
 }
