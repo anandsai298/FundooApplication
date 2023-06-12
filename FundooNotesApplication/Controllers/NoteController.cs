@@ -45,7 +45,7 @@ namespace FundooNotesApplication.Controllers
                 throw new Exception(ex.Message);
             }
         }
-        [HttpPost("GetAllNotes")]
+        [HttpGet("GetAllNotes")]
         public IActionResult GetAllNotes()
         {
             try
