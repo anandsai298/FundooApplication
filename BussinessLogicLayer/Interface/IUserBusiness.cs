@@ -13,5 +13,7 @@ namespace BusinessLogicLayer.Interface
         public bool IfEmailExists(string Email);
         public string ForgetPassword(string email);
         public UserTicket CreateTicketForPassword(string email, string token);
+        public string ResetPassword(ResetPassword resetPassword, string Email);
+        //public ReviewEntity ReviewRegister(ReviewRegisterModel revModel);
     }
 }

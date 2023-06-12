@@ -1,4 +1,5 @@
 ﻿using BusinessLogicLayer.Interface;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -72,6 +73,28 @@ namespace FundooNotesApplication.Controllers
                 }
             }
             catch(Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+        [Authorize]
+        [HttpPatch("ResetPassword")]
+        public IActionResult ResetPassword(ResetPassword resetPassword)
+        {
+            try
+            {
+                var email = User.Claims.FirstOrDefault(a => a.Type=="Email").Value;
+                var forget = iUserBus.ResetPassword(resetPassword, email);
+                if(forget != null)
+                {
+                    return Ok(new ResponseModel<string> { Status = true, Message = "reset password successfull", Data = forget });
+                }
+                else
+                {
+                    return BadRequest(new ResponseModel<string> { Status = false, Message = "reset password UNsuccessfull" });
+                }
+            }
+            catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }

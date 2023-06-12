@@ -31,7 +31,7 @@ namespace FundooNotesApplication
             Configuration = configuration;
         }
 
-        public IConfiguration Configuration { get; }
+        public IConfiguration Configuration { get; set; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -40,30 +40,35 @@ namespace FundooNotesApplication
             services.AddDbContext<FundooContext>(option => option.UseSqlServer(Configuration["ConnectionStrings:FundooDB"]));
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<IUserBusiness, UserBusiness>();
-            services.AddSwaggerGen(a=>
+            services.AddTransient<INotesRepository, NotesRepository>();
+            services.AddTransient<INotesBusiness, NotesBusiness>();
+            services.AddSwaggerGen(a =>
             {
-                a.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
-                {
-                    Name = "Autherization",
-                    Type = SecuritySchemeType.ApiKey,
-                    Scheme = "Bearer",
-                    BearerFormat = "JWT",
-                    In = ParameterLocation.Header,
-                    Description = "JWT Autherization header using the Bearer Scheme.\r\n\r\n Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample"
-                });
+                a.AddSecurityDefinition(
+                    "Bearer",
+                    new OpenApiSecurityScheme()
+                    {
+                        Name = "Authorization",
+                        Type = SecuritySchemeType.ApiKey,
+                        Scheme = "Bearer",
+                        BearerFormat = "JWT",
+                        In = ParameterLocation.Header,
+                        Description = "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer 12345abcdef\"",
+
+                    });
                 a.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {
                     {
-                        new OpenApiSecurityScheme
+                    new OpenApiSecurityScheme
+                    {
+                        Reference=new OpenApiReference
                         {
-                            Reference=new OpenApiReference
-                            {
-                                Type=ReferenceType.SecurityScheme,
-                                Id="Bearer"
-                            }
-                        },
-                        new string[]
-                        { }
+                            Type=ReferenceType.SecurityScheme,
+                            Id="Bearer"
+                        }
+                    },
+                    new string[]
+                    {}
                     }
                 });
             });
@@ -81,8 +86,9 @@ namespace FundooNotesApplication
                     ValidAudience = Configuration["Jwt:Audience"],
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(this.Configuration["Jwt:SecretKey"]))
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(this.Configuration["Jwt:Key"]))
                 };
+
             });
             services.AddMassTransit(x =>
             {
@@ -106,6 +112,7 @@ namespace FundooNotesApplication
             {
                 app.UseDeveloperExceptionPage();
             }
+            app.UseAuthentication();
 
             app.UseHttpsRedirection();
             app.UseSwagger();
@@ -115,6 +122,7 @@ namespace FundooNotesApplication
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Employee API V1");
             });
+            
 
             app.UseRouting();
 

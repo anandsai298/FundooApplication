@@ -100,6 +100,27 @@ namespace RepositoryLayer.Services
                 throw new Exception(ex.Message);
             }
         }
+        public string ResetPassword(ResetPassword resetPassword,string email)
+        {
+            try
+            {
+                if(resetPassword.Password.Equals(resetPassword.ConfirmPassword))
+                {
+                    var EmailCheck = this.fundoo.Users.Where(x => x.Email == email).FirstOrDefault();
+                    EmailCheck.Password = EncryptPassword(resetPassword.Password);
+                    fundoo.SaveChanges();
+                    return "reset password was done seccessfully";
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch(Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
         public UserTicket CreateTicketForPassword(string email,string token)
         {
             try
@@ -128,5 +149,21 @@ namespace RepositoryLayer.Services
                 throw new Exception(ex.Message);
             }
         }
+       /* public ReviewEntity ReviewRegister( ReviewRegisterModel revModel)
+        {
+            try
+            {
+                ReviewEntity reviewEntity = new ReviewEntity();
+                reviewEntity.ReviewName = revModel.ReviewName;
+                reviewEntity.Comments = revModel.Comments;
+                fundoo.Reviews.Add(reviewEntity);
+                fundoo.SaveChanges();
+                return reviewEntity;
+            }
+            catch(Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }*/
     }
 }

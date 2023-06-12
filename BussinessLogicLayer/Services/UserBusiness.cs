@@ -1,4 +1,5 @@
 ﻿using BusinessLogicLayer.Interface;
+using com.sun.org.apache.bcel.@internal.generic;
 using Microsoft.Data.SqlClient.Server;
 using ModelLayer.Models;
 using RepositoryLayer.Entity;
@@ -60,6 +61,17 @@ namespace BusinessLogicLayer.Services
                 throw new Exception(ex.Message);
             }
         }
+        public string ResetPassword(ResetPassword resetPassword, string Email)
+        {
+            try
+            {
+                return IuserRep.ResetPassword(resetPassword, Email);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
         public UserTicket CreateTicketForPassword(string email, string token)
         {
             try
@@ -71,5 +83,16 @@ namespace BusinessLogicLayer.Services
                 throw new Exception(ex.Message);
             }
         }
+       /* public ReviewEntity ReviewRegister(ReviewRegisterModel revModel)
+        {
+            try
+            {
+                return IuserRep.ReviewRegister(revModel);
+            }
+            catch(Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }*/
     }
 }
