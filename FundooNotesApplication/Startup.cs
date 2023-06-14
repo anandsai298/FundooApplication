@@ -42,6 +42,8 @@ namespace FundooNotesApplication
             services.AddTransient<IUserBusiness, UserBusiness>();
             services.AddTransient<INotesRepository, NotesRepository>();
             services.AddTransient<INotesBusiness, NotesBusiness>();
+            services.AddTransient<ILabelRepository, LabelRepository>();
+            services.AddTransient<ILabelBusiness, LabelBusiness>();
             services.AddSwaggerGen(a =>
             {
                 a.AddSecurityDefinition(
@@ -103,6 +105,8 @@ namespace FundooNotesApplication
                 }));
             });
             services.AddMassTransitHostedService();
+            services.AddDistributedMemoryCache();
+            services.AddStackExchangeRedisCache(options => { options.Configuration = Configuration["RedisCacheUrl"]; });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -113,6 +117,7 @@ namespace FundooNotesApplication
                 app.UseDeveloperExceptionPage();
             }
             app.UseAuthentication();
+
 
             app.UseHttpsRedirection();
             app.UseSwagger();
