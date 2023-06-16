@@ -2,8 +2,10 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using NLog.Web;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -13,7 +15,23 @@ namespace FundooNotesApplication
     {
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            var pathlog = Path.Combine(Directory.GetCurrentDirectory(), "FundooLogFiles");
+            NLog.GlobalDiagnosticsContext.Set("LogDirectory", pathlog);
+            var logger = NLogBuilder.ConfigureNLog("NLog.config").GetCurrentClassLogger();
+            try
+            {
+                logger.Debug("Fundoo Notes Application Started --> ");
+                CreateHostBuilder(args).Build().Run();
+            }
+            catch(Exception ex)
+            {
+                logger.Error(ex,"Exception During Execution of Program");
+                throw ex;
+            }
+            finally
+            {
+                NLog.LogManager.Shutdown();
+            }
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
@@ -21,6 +39,11 @@ namespace FundooNotesApplication
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
-                });
+                })
+                .ConfigureLogging(logging =>
+                {
+                    logging.ClearProviders();
+                    logging.SetMinimumLevel(LogLevel.Debug);
+                }).UseNLog();
     }
 }

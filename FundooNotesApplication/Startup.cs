@@ -44,6 +44,8 @@ namespace FundooNotesApplication
             services.AddTransient<INotesBusiness, NotesBusiness>();
             services.AddTransient<ILabelRepository, LabelRepository>();
             services.AddTransient<ILabelBusiness, LabelBusiness>();
+            services.AddTransient<ICollaboratorRepository, CollaboratorRepository>();
+            services.AddTransient<ICollaboratorBusiness, CollaboratorBusiness>();
             services.AddSwaggerGen(a =>
             {
                 a.AddSecurityDefinition(
@@ -107,6 +109,10 @@ namespace FundooNotesApplication
             services.AddMassTransitHostedService();
             services.AddDistributedMemoryCache();
             services.AddStackExchangeRedisCache(options => { options.Configuration = Configuration["RedisCacheUrl"]; });
+            services.AddSession(option =>
+            {
+                option.IdleTimeout = TimeSpan.FromHours(1);
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -127,7 +133,7 @@ namespace FundooNotesApplication
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Employee API V1");
             });
-            
+            app.UseSession();
 
             app.UseRouting();
 

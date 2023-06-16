@@ -25,7 +25,7 @@ namespace FundooNotesApplication.Controllers
         {
             try
             {
-                long userID = Convert.ToInt64(User.Claims.FirstOrDefault(x => x.Type == "UserID").Value);
+                int userID = Convert.ToInt32(User.Claims.FirstOrDefault(x => x.Type == "UserID").Value);
                 var labelCreate = labelBus.AddLabel(labelName, userID, NoteID);
                 if(labelCreate!=null)
                 {
@@ -46,7 +46,7 @@ namespace FundooNotesApplication.Controllers
         {
             try
             {
-                long userID = Convert.ToInt64(User.Claims.FirstOrDefault(a => a.Type == "UserID").Value);
+                int userID = Convert.ToInt32(User.Claims.FirstOrDefault(a => a.Type == "UserID").Value);
                 var getlabel = labelBus.GetAllLabels(userID);
                 if (getlabel != null)
                 {
@@ -67,7 +67,7 @@ namespace FundooNotesApplication.Controllers
         {
             try
             {
-                long userID = Convert.ToInt32(User.Claims.FirstOrDefault(a => a.Type == "UserID").Value);
+                int userID = Convert.ToInt32(User.Claims.FirstOrDefault(a => a.Type == "UserID").Value);
                 var lblname = labelBus.UpdateLabelName(oldname, newname, userID);
                 if(lblname!=null)
                 {
@@ -88,7 +88,7 @@ namespace FundooNotesApplication.Controllers
         {
             try
             {
-                long userID = Convert.ToInt32(User.Claims.FirstOrDefault(a => a.Type == "UserID").Value);
+                int userID = Convert.ToInt32(User.Claims.FirstOrDefault(a => a.Type == "UserID").Value);
                 var dltlbl = labelBus.DeleteLable(labelID, userID);
                 if(dltlbl!=null)
                 {

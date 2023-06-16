@@ -40,7 +40,7 @@ namespace FundooNotesApplication.Controllers
         {
             try
             {
-                long userID = Convert.ToInt32(User.Claims.FirstOrDefault(a => a.Type == "UserID").Value);
+                int userID = Convert.ToInt32(User.Claims.FirstOrDefault(a => a.Type == "UserID").Value);
                 var NoteCreate = NoteBus.AddNotes(notesModel, userID);
                 if (NoteCreate != null)
                 {
@@ -62,7 +62,7 @@ namespace FundooNotesApplication.Controllers
         {
             try
             {
-                long userID = Convert.ToInt32(User.Claims.FirstOrDefault(a => a.Type == "UserID").Value);
+                int userID = Convert.ToInt32(User.Claims.FirstOrDefault(a => a.Type == "UserID").Value);
                 var getNotes = NoteBus.GetAllNotes(userID);
                 if (getNotes != null)
                 {
@@ -113,7 +113,7 @@ namespace FundooNotesApplication.Controllers
         {
             try
             {
-                long userID = Convert.ToInt32(User.Claims.FirstOrDefault(a => a.Type == "UserID").Value);
+                int userID = Convert.ToInt32(User.Claims.FirstOrDefault(a => a.Type == "UserID").Value);
                 var output = NoteBus.Pin_UnPin_Note(NoteID, userID);
                 if (output != null)
                 {
@@ -134,7 +134,7 @@ namespace FundooNotesApplication.Controllers
         {
             try
             {
-                long userID = Convert.ToInt32(User.Claims.FirstOrDefault(a => a.Type == "UserID").Value);
+                int userID = Convert.ToInt32(User.Claims.FirstOrDefault(a => a.Type == "UserID").Value);
                 var arch = NoteBus.Archive(NoteID, userID);
                 if (arch != null)
                 {
@@ -155,7 +155,7 @@ namespace FundooNotesApplication.Controllers
         {
             try
             {
-                long userID = Convert.ToInt32(User.Claims.FirstOrDefault(a => a.Type == "UserID").Value);
+                int userID = Convert.ToInt32(User.Claims.FirstOrDefault(a => a.Type == "UserID").Value);
                 var trsh = NoteBus.Trash(NoteID, userID);
                 if (trsh != null)
                 {
@@ -176,7 +176,7 @@ namespace FundooNotesApplication.Controllers
         {
             try
             {
-                long userID = Convert.ToInt32(User.Claims.FirstOrDefault(a => a.Type == "UserID").Value);
+                int userID = Convert.ToInt32(User.Claims.FirstOrDefault(a => a.Type == "UserID").Value);
                 var Dlt = NoteBus.DeleteNotes(NoteID, userID);
                 if (Dlt != null)
                 {
@@ -195,7 +195,7 @@ namespace FundooNotesApplication.Controllers
         [HttpPost("UpdateNotes")]
         public IActionResult UpdateNotes(NotesModel updateModel,int NoteID)
         {
-            long userID = Convert.ToUInt32((User.Claims.FirstOrDefault(a => a.Type == "UserID").Value));
+            int userID = Convert.ToInt32((User.Claims.FirstOrDefault(a => a.Type == "UserID").Value));
             var upnot = NoteBus.UpdateNotes(updateModel, NoteID, userID);
             if(upnot != null)
             {
@@ -211,7 +211,7 @@ namespace FundooNotesApplication.Controllers
         {
             try
             {
-                long userID = Convert.ToInt32(User.Claims.FirstOrDefault(a => a.Type == "UserID").Value);
+                int userID = Convert.ToInt32(User.Claims.FirstOrDefault(a => a.Type == "UserID").Value);
                 var clrnote = NoteBus.Colour(colour, NoteID, userID);
                 if(clrnote != null)
                 {
@@ -232,7 +232,7 @@ namespace FundooNotesApplication.Controllers
         {
             try
             {
-                long userID = Convert.ToInt32(User.Claims.FirstOrDefault(a => a.Type == "UserID").Value);
+                int userID = Convert.ToInt32(User.Claims.FirstOrDefault(a => a.Type == "UserID").Value);
                 var noteimg = NoteBus.UploadImage(path, NoteID, userID);
                 if (noteimg != null)
                 {
@@ -253,7 +253,7 @@ namespace FundooNotesApplication.Controllers
         {
             try
             {
-                long userID = Convert.ToInt32(User.Claims.FirstOrDefault(a => a.Type == "UserID").Value);
+                int userID = Convert.ToInt32(User.Claims.FirstOrDefault(a => a.Type == "UserID").Value);
                 var imgform = NoteBus.UploadImageFormFile(path, NoteID, userID);
                 if(imgform != null)
                 {
@@ -275,7 +275,7 @@ namespace FundooNotesApplication.Controllers
         {
             try
             {
-                long userID = Convert.ToInt32(User.Claims.FirstOrDefault(a => a.Type == "UserID").Value);
+                int userID = Convert.ToInt32(User.Claims.FirstOrDefault(a => a.Type == "UserID").Value);
                 var rem = NoteBus.Remainder(remainder, NoteID, userID);
                 if (rem != null)
                 {

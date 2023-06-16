@@ -1,5 +1,7 @@
 ﻿using BusinessLogicLayer.Interface;
+using com.sun.net.httpserver;
 using com.sun.org.apache.bcel.@internal.generic;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Data.SqlClient.Server;
 using ModelLayer.Models;
 using RepositoryLayer.Entity;
@@ -13,9 +15,11 @@ namespace BusinessLogicLayer.Services
     public class UserBusiness: IUserBusiness
     {
         private readonly IUserRepository IuserRep;
-        public UserBusiness(IUserRepository iuserRep)
+        private readonly IHttpContextAccessor httpContextAccessor;
+        public UserBusiness(IUserRepository iuserRep, IHttpContextAccessor httpContextAccessor)
         {
             IuserRep = iuserRep;
+            this.httpContextAccessor= httpContextAccessor;
         }
         public UserEntity Register(RegisterModel RegModel)
         {
@@ -83,7 +87,8 @@ namespace BusinessLogicLayer.Services
                 throw new Exception(ex.Message);
             }
         }
-       /* public ReviewEntity ReviewRegister(ReviewRegisterModel revModel)
+
+        /* public ReviewEntity ReviewRegister(ReviewRegisterModel revModel)
         {
             try
             {

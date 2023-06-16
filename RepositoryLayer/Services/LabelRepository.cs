@@ -15,29 +15,39 @@ namespace RepositoryLayer.Services
         {
             this.fundooContext= fundooContext;
         }
-        public LabelEntity AddLabel(string LableName,long userID,int NoteID)
+        public LabelEntity AddLabel(string LableName, int userID,int NoteID)
         {
             try
             {
                 LabelEntity labelEntity = new LabelEntity();
 
-                var existinglabelname =fundooContext.Labels.Where(a=>a.LabelName==LableName &&  a.UserID==userID).FirstOrDefault();
-                if (existinglabelname!=null)
+                var uselbl =fundooContext.Labels.Where( a=> a.UserID==userID);
+                if(uselbl!=null )
                 {
-                    existinglabelname.NoteID = NoteID;
-                    existinglabelname.LabelName=LableName;
-                    //fundooContext.Labels.Add(labelEntity);
-                    fundooContext.SaveChanges();
-                    return existinglabelname;
+                    var existinglabelname=fundooContext.Labels.Where(a=>a.LabelName==LableName).FirstOrDefault();
+                    if (existinglabelname == null)
+                    {
+                        labelEntity.LabelName = LableName;
+                        labelEntity.UserID = userID;
+                        labelEntity.NoteID = NoteID;
+                        fundooContext.Labels.Add(labelEntity);
+                        fundooContext.SaveChanges();
+                        return labelEntity;
+                        //
+                    }
+                    else
+                    {
+                        existinglabelname.LabelName = LableName;
+                        existinglabelname.UserID = userID;
+                        existinglabelname.NoteID = NoteID;
+                        //fundooContext.Labels.Add(labelEntity);
+                        fundooContext.SaveChanges();
+                        return existinglabelname;
+                    }
                 }
                 else
                 {
-                    labelEntity.LabelName = LableName;
-                    labelEntity.UserID = (int)userID;
-                    labelEntity.NoteID = NoteID;
-                    fundooContext.Labels.Add(labelEntity);
-                    fundooContext.SaveChanges();
-                    return labelEntity;
+                    return null;
                 }
                
             }
@@ -46,7 +56,7 @@ namespace RepositoryLayer.Services
                 throw new Exception(ex.Message);
             }
         }
-        public List<LabelEntity>GetAllLabels(long userID)
+        public List<LabelEntity>GetAllLabels(int userID)
         {
             try
             {
@@ -58,7 +68,7 @@ namespace RepositoryLayer.Services
                 throw new Exception(ex.Message);
             }
         }
-        public LabelEntity UpdateLabelName(string oldname,string newname,long userID)
+        public LabelEntity UpdateLabelName(string oldname,string newname, int userID)
         {
             try
             {
@@ -87,7 +97,7 @@ namespace RepositoryLayer.Services
                 throw new Exception(ex.Message);
             }
         }
-        public bool DeleteLable(int labelID, long userID)
+        public bool DeleteLable(int labelID, int userID)
         {
             try
             {

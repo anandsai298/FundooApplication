@@ -14,7 +14,7 @@ namespace BusinessLogicLayer.Services
         {
             this.labelRepository = labelRepository;
         }
-        public LabelEntity AddLabel(string LableName, long userID, int NoteID)
+        public LabelEntity AddLabel(string LableName, int userID, int NoteID)
         {
             try
             {
@@ -25,7 +25,7 @@ namespace BusinessLogicLayer.Services
                 throw new Exception(ex.Message);
             }
         }
-        public List<LabelEntity> GetAllLabels(long userID)
+        public List<LabelEntity> GetAllLabels(int userID)
         {
             try
             {
@@ -36,7 +36,7 @@ namespace BusinessLogicLayer.Services
                 throw new Exception(ex.Message);
             }
         }
-        public LabelEntity UpdateLabelName(string oldname, string newname, long userID)
+        public LabelEntity UpdateLabelName(string oldname, string newname, int userID)
         {
             try
             {
@@ -47,7 +47,7 @@ namespace BusinessLogicLayer.Services
                 throw new Exception(ex.Message);
             }
         }
-        public bool DeleteLable(int labelID, long userID)
+        public bool DeleteLable(int labelID, int userID)
         {
             try
             {

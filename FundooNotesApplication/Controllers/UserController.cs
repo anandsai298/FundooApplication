@@ -11,6 +11,7 @@ using RepositoryLayer.Migrations;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using static com.sun.tools.@internal.xjc.reader.xmlschema.bindinfo.BIConversion;
 
 namespace FundooNotesApplication.Controllers
 {
@@ -20,10 +21,12 @@ namespace FundooNotesApplication.Controllers
     {
         private readonly IUserBusiness iUserBus;
         private readonly FundooContext fundoo;
-        public UserController(IUserBusiness iUserBus, FundooContext fundoo)
+        private readonly ILogger<UserController> logger;
+        public UserController(IUserBusiness iUserBus, FundooContext fundoo, ILogger<UserController> logger)
         {
             this.iUserBus = iUserBus;
             this.fundoo=fundoo;
+            this.logger = logger;
         }
         
         [HttpPost]
@@ -62,19 +65,26 @@ namespace FundooNotesApplication.Controllers
         {
             try
             {
-                var Asklog = iUserBus.Login(logModel);
+                RegisterModel regmod = new RegisterModel();
+                var Asklog= iUserBus.Login(logModel);
                 if (Asklog != null)
                 {
+                    HttpContext.Session.SetString("UserName", regmod.FirstName + " " + regmod.LastName);
+                    HttpContext.Session.SetString("UserEmail", regmod.Email);
+                    HttpContext.Session.SetString("UserPassword", regmod.Password);
+                    logger.LogInformation("Login Successfully");
                     return Ok(new ResponseModel<string> { Status = true, Message = "Login SuccessFull",Data= Asklog });
                 }
                 else
                 {
+                    logger.LogInformation("Login is Failed");
                     return BadRequest(new ResponseModel<string> { Status = false, Message = "Login UNSuccessFull", Data = Asklog });
                 }
             }
             catch(Exception ex)
             {
-                throw new Exception(ex.Message);
+                logger.LogCritical(ex, "Exception Thrown");
+                return NotFound( new { Status = false, Message = ex.Message });
             }
         }
         [Authorize]

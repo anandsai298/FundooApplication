@@ -7,9 +7,9 @@ namespace RepositoryLayer.Interface
 {
     public interface ILabelRepository
     {
-        public LabelEntity AddLabel(string LableName, long userID, int NoteID);
-        public List<LabelEntity> GetAllLabels(long userID);
-        public LabelEntity UpdateLabelName(string oldname, string newname, long userID);
-        public bool DeleteLable(int labelID, long userID);
+        public LabelEntity AddLabel(string LableName, int userID, int NoteID);
+        public List<LabelEntity> GetAllLabels(int userID);
+        public LabelEntity UpdateLabelName(string oldname, string newname, int userID);
+        public bool DeleteLable(int labelID, int userID);
     }
 }
