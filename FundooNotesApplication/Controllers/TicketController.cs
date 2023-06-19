@@ -38,7 +38,7 @@ namespace FundooNotesApplication.Controllers
                     }
                     else
                     {
-                        return BadRequest(new { success = false, message = "Email was not Registered" });
+                        return BadRequest(new { success = false, message = "Email was not Registered"  });
                     }
                 }
                 else

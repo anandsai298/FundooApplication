@@ -50,6 +50,17 @@ namespace BusinessLogicLayer.Services
                 throw new Exception(ex.Message);
             }
         }
+        public FundooNoteEntity SearchNotes(string word, int userID)
+        {
+            try
+            {
+                return INotesRep.SearchNotes(word, userID);
+            }
+            catch(Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
         public bool Pin_UnPin_Note(int NoteID, int userID)
         {
             try

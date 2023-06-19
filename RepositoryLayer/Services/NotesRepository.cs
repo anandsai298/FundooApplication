@@ -75,6 +75,27 @@ namespace RepositoryLayer.Services
                 throw new Exception(ex.Message);
             }
         }
+        public FundooNoteEntity SearchNotes(string word,int userID)
+        {
+            try
+            {
+                var usernote = fundooContext.FundooNotes.Where(a => a.UserID == userID);
+                if(usernote!=null)
+                {
+                    var wordnote = fundooContext.FundooNotes.Where(a => a.Title == word).FirstOrDefault();
+                    if (wordnote != null)
+                    {
+                        return wordnote;
+                    }
+                    return null;
+                }
+                return null;                 
+            }
+            catch(Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
         public bool Pin_UnPin_Note(int NoteID, int userID)
         {
             try

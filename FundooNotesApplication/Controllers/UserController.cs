@@ -69,9 +69,9 @@ namespace FundooNotesApplication.Controllers
                 var Asklog= iUserBus.Login(logModel);
                 if (Asklog != null)
                 {
-                    HttpContext.Session.SetString("UserName", regmod.FirstName + " " + regmod.LastName);
+                    /*HttpContext.Session.SetString("UserName", regmod.FirstName + " " + regmod.LastName);
                     HttpContext.Session.SetString("UserEmail", regmod.Email);
-                    HttpContext.Session.SetString("UserPassword", regmod.Password);
+                    HttpContext.Session.SetString("UserPassword", regmod.Password);*/
                     logger.LogInformation("Login Successfully");
                     return Ok(new ResponseModel<string> { Status = true, Message = "Login SuccessFull",Data= Asklog });
                 }

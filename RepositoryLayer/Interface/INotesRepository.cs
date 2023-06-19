@@ -12,6 +12,7 @@ namespace RepositoryLayer.Interface
         public FundooNoteEntity AddNotes(NotesModel notesModel, int userID);
         public List<FundooNoteEntity> GetAllNotes(int userID);
         public List<FundooNoteEntity> Get_All_Notes();
+        public FundooNoteEntity SearchNotes(string word, int userID);
         public bool Pin_UnPin_Note(int NoteID, int userID);
         public bool Archive(int NoteID, int userID);
         public bool Trash(int NoteID, int userID);

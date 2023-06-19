@@ -108,6 +108,27 @@ namespace FundooNotesApplication.Controllers
                 throw new Exception(ex.Message);
             }
         }
+        [HttpGet("SearchNotes")]
+        public IActionResult SearchNotes(string word)
+        {
+            try
+            {
+                int userID = Convert.ToInt32(User.Claims.FirstOrDefault(a => a.Type == "UserID").Value);
+                var searchnotes = NoteBus.SearchNotes(word, userID);
+                if(searchnotes!=null)
+                {
+                    return Ok(new { Status = true, Message = "Search note by title is done successfully", Data = searchnotes });
+                }
+                else
+                {
+                    return BadRequest(new { Status = false, Message = "Search note by using title  UNsuccessfully", Data = searchnotes });
+                }
+            }
+            catch(Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
         [HttpPost("PinOrUnPin_Note")]
         public IActionResult Pin_UnPin_Note(int NoteID)
         {
